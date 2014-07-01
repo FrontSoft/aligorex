@@ -21,7 +21,7 @@ function(ko, hammer, utils, mediator, provider, ui, pages, ajx, resty){
         }
     }();
 
-    var goTo = function(name) {
+    var compile = function(name){
         if( document.getElementById(name, document.body) === null ){
             require(['render', '../../pages/'+name+'.View', '../../pages/'+name+'.VM'], function(render, page, VM){
                 mediator.SyncFire('page:compile', [name, VM]);
@@ -35,6 +35,11 @@ function(ko, hammer, utils, mediator, provider, ui, pages, ajx, resty){
         mediator.Fire('page:render', [name]);
     };
 
+    var goTo = function(name) {
+        compile(name);
+        render(name);
+    };
+
     //init cover basic property and methods
     var kover = {
         Ui: ui,
@@ -43,6 +48,7 @@ function(ko, hammer, utils, mediator, provider, ui, pages, ajx, resty){
         ObserveArray: ko.observableArray,
         GoTo: goTo,
         Render: render,
+        Compile: compile,
         _currentPage: ko.observable(),
         Resty: resty
     };
