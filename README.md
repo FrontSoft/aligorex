@@ -1,4 +1,0 @@
-aligorex
-========
-
-app for aligorex
