@@ -1,4 +1,5 @@
 define(function(){
+    'use strict';
 
     // simple Promise implementation
     function Promise(){

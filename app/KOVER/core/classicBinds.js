@@ -45,7 +45,7 @@ define(['ko'], function(ko){
                     extended = lookInApp.cloneNode(true);
                 }
 
-                kover.SyncFire( 'provider:extendBind', [name, krAttr, extended.getAttribute("kr")] );
+                kover.SyncFire( 'provider:extendBind', [name, bindingContext.$root.pageName, krAttr, extended.getAttribute("kr")] );
 
                 ko.applyBindings(kover.GetPage(name).viewModel, extended);
                 extended.setAttribute("kr", krAttr);
