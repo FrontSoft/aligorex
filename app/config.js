@@ -1,8 +1,8 @@
 define(function(){
     return {
         "app": {
-            "mainPage": "Contacts",
-            "firstPage": "Contacts"
+            "mainPage": "Company",
+            "firstPage": "Company"
         }
     };
 });
