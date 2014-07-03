@@ -29,7 +29,7 @@ define(function(){
             child = KOVER.Utils.has(obj, 'DOM') ? node.appendChild( obj.DOM ) : node;
             child.setAttribute('kr', bindName);
 
-            KOVER.Utils.has(obj, 'BIND') ? binds[bindName] = processBind(obj.BIND, this) : '';
+            KOVER.Utils.has(obj, 'BIND') ? binds[bindName] = obj.BIND : '';
         }
 
         KOVER.Utils.each(obj, function(value, key){
@@ -39,22 +39,6 @@ define(function(){
         }, this);
     }
 
-    function processBind(bind, VM){
-        if( KOVER.Utils.isEmpty(bind) ) return;
-
-        KOVER.Utils.each(bind, function(val, key){
-            var vmKey = typeof val === 'string' ? /\{\{(.+)\}\}/g.exec(val) : false;
-            if(vmKey){
-                var dataRes = KOVER.Utils.find(VM, vmKey[1]);   //@todo exec can return more results
-                if(!KOVER.Utils.isEmpty(dataRes)){
-                    bind[key] = dataRes[0];
-                }else{
-                    bind[key] = '';
-                }
-            }
-        });
-        return bind;
-    }
 
     /**
      * applyBindings to node and append to body
@@ -63,7 +47,7 @@ define(function(){
     function renderPage(name){
         name = name || 'App';
         var page = KOVER.GetPage(name);
-        if(page){
+        if(page && KOVER.getGlobals(name+'Ready')){
             KOVER._currentPage(name);
             ko.applyBindings(page.viewModel, page.body);
             document.body.appendChild(page.body);
