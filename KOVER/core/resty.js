@@ -1,7 +1,7 @@
-define(function(){
+define(['ajx'], function(Ajx){
+    'use strict';
 
     var utils = require('utils'),
-        Ajx = require('ajx').Ajx,
         restify = function(Ctor, resource, config){
 
         var serialize = config.serialize || function(list){return list};

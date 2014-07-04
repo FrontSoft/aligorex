@@ -2,40 +2,79 @@ define(['kover'], function(KOVER){
 
     var Page = KOVER.NewPage('Company'),
     Regions = Page.layout({
+        SwipedMenu: KOVER.Ui('nav', {sideMenu: {}, class: "main-nav"}),
         Header: KOVER.Ui('header'),
-        Body: KOVER.Ui('main')
+        Body: KOVER.Ui('main'),        
+    });
+
+    Regions.SwipedMenu({
+        TopMenu: KOVER.Ui('ul', {
+            items: [
+                {Home: KOVER.Ui('a', {
+                    text: 'Главная',
+                    Name: KOVER.Ui('img', {}),
+                    // click: function(){KOVER.GoTo('Home');}
+                } )},
+                {Company: KOVER.Ui('a', {
+                    text: 'О компании',
+                    Name: KOVER.Ui('img', {}),
+                    click: function(){KOVER.GoTo('Company');}
+                } )},
+                {Works: KOVER.Ui('a', {
+                    text: 'Работы',
+                    Name: KOVER.Ui('img', {}),
+                    // click: function(){KOVER.GoTo('Works');}
+                } )},
+                {Services: KOVER.Ui('a', {
+                    text: 'Услуги компании',
+                    Name: KOVER.Ui('img', {}),
+                    click: function(){KOVER.GoTo('Services');}
+                } )},
+                {Contacts: KOVER.Ui('a', {
+                    text: 'Контакты',
+                    Name: KOVER.Ui('img', {}),
+                    click: function(){KOVER.GoTo('Contacts');}
+                } )},
+                {Team: KOVER.Ui('a', {
+                    text: 'Команда',
+                    Name: KOVER.Ui('img', {}),
+                    // click: function(){KOVER.GoTo('Team');}
+                } )},
+                {Map: KOVER.Ui('a', {
+                    text: 'Мы на карте',
+                    Name: KOVER.Ui('img', {}),
+                    // click: function(){KOVER.GoTo('Map');}
+                } )},
+                {News: KOVER.Ui('a', {
+                    text: 'Новости',
+                    Name: KOVER.Ui('img', {}),
+                    // click: function(){KOVER.GoTo('News');}
+                } )},
+            ]
+        })        
     });
 
     Regions.Header({
         HeaderTitle: KOVER.Ui('h2', {
-            text: 'О компании.'
+            text: '{{HeaderTitle}}'
         })
     });
 
     Regions.Body({
         BodyBlock_1: KOVER.Ui('p', {
-            text: 'ALIGOREX CONSULT LTD –международная консалтинговая компания, чей штат состоит из компитентных,\
-                преданных своему делу молодых специалистов. Наша цель – предоставление высококачественного сервиса с\
-                оптимальной комбинацией ЦЕНА-КАЧЕСТВО-СКОРОСТЬ ОБСЛУЖИВАНИЯ.'
+            text: '{{BodyBlock_1}}'
         }),
         BodyBlock_2: KOVER.Ui('p', {
-            text: 'Компания ALIGOREX CONSULT LTD на рынке консалтинговых услуг с 2009г. Головной офис компании\
-                располагается в г. Никосия (Кипр). Для удобства наших клиентов были открыты представительства в г.\
-                Москва (Россия) и в г. Рига (Латвия). Со временем мы планируем расширить свое присутствие в России и\
-                странах СНГ.'
+            text: '{{BodyBlock_2}}'
         }),
         BodyBlock_3: KOVER.Ui('p', {
-            text: 'C июня 2013 г. ALIGOREX CONSULT LTD —является официальным лицензированным провайдером\
-                корпоративных услуг в Объединенных Арабских Эмиратах.'
+            text: '{{BodyBlock_3}}'
         }),
         BodyBlock_4: KOVER.Ui('p', {
-            text: 'На сегодняшний день мы оказываем наши услуги в более чем 30 юрисдикциях, среди которых страны Европы,\
-                Азии и Америки. Наиболее популярные направления: ОАЭ, Великобритания, Швейцария, Белиз, Сейшеллы,\
-                БВО, Сингапур и Кипр.'
+            text: '{{BodyBlock_4}}'
         }),
         BodyBlock_5: KOVER.Ui('p', {
-            text: 'ALIGOREX CONSULT LTD является членом Международной ассоциации International Law&Tax\
-                Association (ILTA) и CYPRUS-RUSSIA BUSINESS ASSOCIATION.'
+            text: '{{BodyBlock_5}}'
         })
     });
 });
