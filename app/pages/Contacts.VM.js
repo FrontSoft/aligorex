@@ -1,6 +1,5 @@
 define(['kover'], function(KOVER){
 
-    KOVER.Render('Contacts');
     
     return {
         HeaderTitle: 'Контакты',
@@ -20,6 +19,6 @@ define(['kover'], function(KOVER){
         ContactsBlock3_phone_attr: '+371-293-66-966',
         ContactsBlock1_email_value: 'office@aligorex.com',
         ContactsBlock2_email_value: 'moscow@aligorex.com',
-        ContactsBlock3_email_value: 'latvia@aligorex.com',
+        ContactsBlock3_email_value: 'latvia@aligorex.com'
     };
 });

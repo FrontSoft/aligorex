@@ -1,4 +1,4 @@
-define(['ko'], function(ko){
+define(['ko', 'userConf'], function(ko, cfg){
     'use strict';
 
 
@@ -38,7 +38,7 @@ define(['ko'], function(ko){
                 if(extended){
                     extended = extended.cloneNode(true);
                 }else{
-                    name = 'App';
+                    name = cfg.app.mainPage;
                     var lookInApp = returnExtended(name);
                     if(!lookInApp) return;  //@todo throw exeption
 
@@ -47,10 +47,10 @@ define(['ko'], function(ko){
 
                 kover.SyncFire( 'provider:extendBind', [name, bindingContext.$root.pageName, krAttr, extended.getAttribute("kr")] );
 
-                ko.applyBindings(kover.GetPage(name).viewModel, extended);
                 extended.setAttribute("kr", krAttr);
                 parent.insertBefore(extended, element);
                 parent.removeChild(element);
+                ko.applyBindings(kover.GetPage(name).viewModel, extended);
             }
         },
         detachedSwipe : {

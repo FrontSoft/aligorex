@@ -45,7 +45,7 @@ define(function(){
      * @param {string} name
      */
     function renderPage(name){
-        name = name || 'App';
+        name = name;
         var page = KOVER.GetPage(name);
         if(page && KOVER.getGlobals(name+'Ready')){
             KOVER._currentPage(name);

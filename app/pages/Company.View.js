@@ -4,7 +4,7 @@ define(['kover'], function(KOVER){
     Regions = Page.layout({
         SwipedMenu: KOVER.Ui('nav', {sideMenu: {}, class: "main-nav"}),
         Header: KOVER.Ui('header'),
-        Body: KOVER.Ui('main'),        
+        Body: KOVER.Ui('main')
     });
 
     Regions.SwipedMenu({
@@ -12,7 +12,7 @@ define(['kover'], function(KOVER){
             items: [
                 {Home: KOVER.Ui('a', {
                     text: 'Главная',
-                    Name: KOVER.Ui('img', {}),
+                    Name: KOVER.Ui('img', {})
                     // click: function(){KOVER.GoTo('Home');}
                 } )},
                 {Company: KOVER.Ui('a', {
@@ -22,7 +22,7 @@ define(['kover'], function(KOVER){
                 } )},
                 {Works: KOVER.Ui('a', {
                     text: 'Работы',
-                    Name: KOVER.Ui('img', {}),
+                    Name: KOVER.Ui('img', {})
                     // click: function(){KOVER.GoTo('Works');}
                 } )},
                 {Services: KOVER.Ui('a', {
@@ -37,19 +37,19 @@ define(['kover'], function(KOVER){
                 } )},
                 {Team: KOVER.Ui('a', {
                     text: 'Команда',
-                    Name: KOVER.Ui('img', {}),
+                    Name: KOVER.Ui('img', {})
                     // click: function(){KOVER.GoTo('Team');}
                 } )},
                 {Map: KOVER.Ui('a', {
                     text: 'Мы на карте',
-                    Name: KOVER.Ui('img', {}),
+                    Name: KOVER.Ui('img', {})
                     // click: function(){KOVER.GoTo('Map');}
                 } )},
                 {News: KOVER.Ui('a', {
                     text: 'Новости',
-                    Name: KOVER.Ui('img', {}),
+                    Name: KOVER.Ui('img', {})
                     // click: function(){KOVER.GoTo('News');}
-                } )},
+                } )}
             ]
         })        
     });
