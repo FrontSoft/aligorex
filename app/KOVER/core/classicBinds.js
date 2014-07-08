@@ -33,19 +33,26 @@ define(['ko', 'userConf'], function(ko, cfg){
                     extended = returnExtended(name),
                     nodeBinds = allBindings(),
                     parent = element.parentNode,
-                    krAttr = element.getAttribute("kr");
+                    krAttr = element.getAttribute("kr"),
+                    value = valueAccessor(),
+                    extName;
 
                 if(extended){
                     extended = extended.cloneNode(true);
+                    extName = name;
                 }else{
-                    name = cfg.app.mainPage;
-                    var lookInApp = returnExtended(name);
+                    extName = cfg.app.mainPage;
+                    var lookInApp = returnExtended(extName);
                     if(!lookInApp) return;  //@todo throw exeption
 
                     extended = lookInApp.cloneNode(true);
                 }
 
-                kover.SyncFire( 'provider:extendBind', [name, bindingContext.$root.pageName, krAttr, extended.getAttribute("kr")] );
+                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
+                var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null});
+                kover.SyncFire( 'page:renderBlock', [obj[0], function(dom, binds){
+                    kover.SyncFire('bindClass:addBind', [name, binds]);
+                }]);
 
                 extended.setAttribute("kr", krAttr);
                 parent.insertBefore(extended, element);

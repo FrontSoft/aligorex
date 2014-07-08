@@ -13,7 +13,7 @@ define(function(){
         var page = KOVER.GetPage(name);
         KOVER.Utils.extend(page.viewModel, VM);
         binds = {};
-        recurciveBuilder.call(page.viewModel, page.viewObject, page.body, null);
+        recurciveBuilder(page.viewObject, page.body, null);
         KOVER.SyncFire('bindClass:addBind', [name, binds]);
     }
 
@@ -26,7 +26,7 @@ define(function(){
     function recurciveBuilder(obj, node, bindName){
         var child = node;
         if(bindName){
-            child = KOVER.Utils.has(obj, 'DOM') ? node.appendChild( obj.DOM ) : node;
+            child = KOVER.Utils.has(obj, 'DOM') ? node.appendChild( obj.DOM.cloneNode(true) ) : node;
             child.setAttribute('kr', bindName);
 
             KOVER.Utils.has(obj, 'BIND') ? binds[bindName] = obj.BIND : '';
@@ -34,7 +34,7 @@ define(function(){
 
         KOVER.Utils.each(obj, function(value, key){
             if( value instanceof KOVER.Ui ){
-                recurciveBuilder.call(this, value, child, key);
+                recurciveBuilder(value, child, key);
             }
         }, this);
     }
@@ -58,9 +58,24 @@ define(function(){
     }
 
 
+    function renderBlock(obj, callback){
+        if(!KOVER.Utils.isEmpty(obj)){
+            var block = document.createDocumentFragment();
+            binds = {};
+            recurciveBuilder(obj, block, obj.DOM.getAttribute("kr"));
+
+            if(callback){
+                callback(block, binds);
+            }else{
+                return {DOM: block, BIND: binds};
+            }
+        }
+    }
+
     //render module subscribers
     KOVER.On({
         'page:render': renderPage,
-        'page:compile': compilePage
+        'page:compile': compilePage,
+        'page:renderBlock': renderBlock
     })
 });

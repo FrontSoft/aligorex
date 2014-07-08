@@ -18,7 +18,8 @@ define(['kover'], function(KOVER){
                 {Company: KOVER.Ui('a', {
                     text: 'О компании',
                     Name: KOVER.Ui('img', {}),
-                    click: function(){KOVER.GoTo('Company');}
+                    click: function(){KOVER.GoTo('Company');},
+                    clickBubble: false
                 } )},
                 {Works: KOVER.Ui('a', {
                     text: 'Работы',
@@ -28,12 +29,14 @@ define(['kover'], function(KOVER){
                 {Services: KOVER.Ui('a', {
                     text: 'Услуги компании',
                     Name: KOVER.Ui('img', {}),
-                    click: function(){KOVER.GoTo('Services');}
+                    click: function(){KOVER.GoTo('Services');},
+                    clickBubble: false
                 } )},
                 {Contacts: KOVER.Ui('a', {
                     text: 'Контакты',
                     Name: KOVER.Ui('img', {}),
-                    click: function(){KOVER.GoTo('Contacts');}
+                    click: function(){KOVER.GoTo('Contacts');},
+                    clickBubble: false
                 } )},
                 {Team: KOVER.Ui('a', {
                     text: 'Команда',

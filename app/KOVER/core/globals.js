@@ -5,6 +5,7 @@ define(function(){
 
     function setGlobals(key, value) {
         storage[key] = value;
+        return storage[key];
     }
     function getGlobals(key) {
         return storage[key];
