@@ -1,9 +1,8 @@
-define( function(){
+define(['ui'], function(ui){
     'use strict';
 
     var pageStorage = {},
         utils = require('utils'),
-        ui = require('ui'),
         mediator = require('mediator'),
         fragment = document.createElement('section');
 

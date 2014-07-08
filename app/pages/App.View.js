@@ -1,5 +1,0 @@
-define(['kover'], function(KOVER){
-
-   
-
-});
