@@ -3,7 +3,7 @@ define(['kover'], function(KOVER){
     var Page = KOVER.NewPage('Services'),
     Regions = Page.layout({
         Header: KOVER.Ui('header'),
-        Body: KOVER.Ui('main'),        
+        Body: KOVER.Ui('main')
     });
 
     Regions.Header({

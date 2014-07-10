@@ -4,6 +4,7 @@ define(function(){
 
     var BindsObj = function(){
         this.getText = function(args){
+            if(args === 'this') return {text: this};
             return {text: this[args]};
         };
         this.activePage = function(){
