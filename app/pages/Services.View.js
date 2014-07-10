@@ -17,10 +17,9 @@ define(['kover'], function(KOVER){
             text: '{{BodyBlock_1}}'
         }),
         BlockLinks: KOVER.Ui('ul', {
-            BlockLink: KOVER.Ui('li', {
-                text: '{{BlockLink}}',
-                click: function(){KOVER.GoTo('Services_corporate');},
-                clickBubble: false
+            LinkTitle: KOVER.Ui('li', {
+                text: '{{LinkTitle}}',
+                menuLink: '{{LinkPath}}'
             }),            
             foreach: '{{BlockLinks}}'
         })
