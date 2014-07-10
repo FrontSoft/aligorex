@@ -58,11 +58,11 @@ define(function(){
     }
 
 
-    function renderBlock(obj, callback){
+    function renderBlock(obj, name, callback){
         if(!KOVER.Utils.isEmpty(obj)){
-            var block = document.createDocumentFragment();
+            var block = document.createElement('div');
             binds = {};
-            recurciveBuilder(obj, block, obj.DOM.getAttribute("kr"));
+            recurciveBuilder(obj, block, name);
 
             if(callback){
                 callback(block, binds);

@@ -20,6 +20,25 @@ define(['ko', 'userConf'], function(ko, cfg){
                 })
             }
         },
+        menuLink : {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var kover = require('kover');
+                var newAllBindings = function(){
+                    return ko.utils.extend(allBindings(), { clickBubble: false });
+                };
+                newAllBindings.get = function(a){
+                    return a === 'clickBubble' ? false : allBindings.get(a);
+                };
+                newAllBindings.has = function(a){
+                    return a === 'clickBubble' || allBindings.has(a);
+                };
+                return ko.bindingHandlers.click.init(element, function(){
+                        return function(){
+                            kover.GoTo(valueAccessor());
+                        };
+                    }, newAllBindings, viewModel, bindingContext);
+            }
+        },
         extend : {
             init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
 
@@ -48,16 +67,18 @@ define(['ko', 'userConf'], function(ko, cfg){
                     extended = lookInApp.cloneNode(true);
                 }
 
-                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
-                var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null});
-                kover.SyncFire( 'page:renderBlock', [obj[0], function(dom, binds){
-                    kover.SyncFire('bindClass:addBind', [name, binds]);
+//                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
+                var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null}),
+                    a,b;
+                kover.SyncFire( 'page:renderBlock', [obj[0], value, function(dom, binds){
+                    a=dom.childNodes[0];
+                    b=binds;
                 }]);
 
-                extended.setAttribute("kr", krAttr);
-                parent.insertBefore(extended, element);
+                a.setAttribute("kr", value);
+                parent.insertBefore(a, element);
                 parent.removeChild(element);
-                ko.applyBindings(kover.GetPage(name).viewModel, extended);
+                ko.applyBindings(kover.GetPage(extName).viewModel, a);
             }
         },
         detachedSwipe : {
