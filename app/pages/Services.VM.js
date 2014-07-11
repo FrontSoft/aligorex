@@ -19,7 +19,7 @@ define(['kover'], function(KOVER){
             },
             {
                 LinkTitle: 'Ведение бухгалтерского учета и услуги аудита — при поддержке нашего лицензированного партнера Canaima Tax & Audit LTD',
-                LinkPath: 'Services_corporate'
+                LinkPath: 'Services_audit'
             },
             {
                 LinkTitle: 'Консультации по любым операциям с недвижимостью и связанные с этим рекомендации в получении вида на жительство в Латвии, Греции и наКипре — при содействии нашего партнера компании ProLandExpert Ltd',
