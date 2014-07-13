@@ -23,19 +23,18 @@ define(['kover'], function(KOVER){
             },
             {
                 LinkTitle: 'Консультации по любым операциям с недвижимостью и связанные с этим рекомендации в получении вида на жительство в Латвии, Греции и наКипре — при содействии нашего партнера компании ProLandExpert Ltd',
-                LinkPath: 'Services_corporate'
+                LinkPath: 'Services_realty_consult'
             },
             {
                 LinkTitle: 'Широкий доступ к альтернативным инвестициям',
-                LinkPath: 'Services_corporate'
+                LinkPath: 'Services_alternative_investment'
             },
             {
                 LinkTitle: 'Юридические консультации в области рисков и налогового планирования, при участии одной из крупнейших юридических компаний на Кипре с  успешной практикой более 10 лет',
-                LinkPath: 'Services_corporate'
             },
             {
                 LinkTitle: 'Консультации и услуги в сфере информационных технологий при сотрудничестве с нашими партнерами Aligorex IT Services',
-                LinkPath: 'Services_corporate'
+                LinkPath: 'Services_IT_consult'
             }
         ])
     };
