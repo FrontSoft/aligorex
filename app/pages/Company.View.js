@@ -2,7 +2,7 @@ define(['kover'], function(KOVER){
 
     var Page = KOVER.NewPage('Company'),
     Regions = Page.layout({
-        SwipedMenu: KOVER.Ui('nav', {sideMenu: {}, class: "main-nav"}),
+        SwipedMenu: KOVER.Ui('nav', {sideMenu: null, class: "main-nav"}),
         Header: KOVER.Ui('header'),
         Body: KOVER.Ui('main')
     });

@@ -3,7 +3,7 @@ define(['kover'], function(KOVER){
     var Page = KOVER.NewPage('Services_audit'),
     Regions = Page.layout({
         Header: KOVER.Ui('header'),
-        Body: KOVER.Ui('main'),        
+        Body: KOVER.Ui('main')
     });
 
     Regions.Header({
@@ -17,10 +17,11 @@ define(['kover'], function(KOVER){
             text: '{{BodyBlock_1}}'
         }),
         BlockList_1: KOVER.Ui('ul', {
+            foreach: '{{BlockList_1}}',
+
             Title: KOVER.Ui('li', {
                 text: '{{this}}'
-            }),            
-            foreach: '{{BlockList_1}}'
+            })
         }),
         BlockTitle_1: KOVER.Ui('h3', {
             text: '{{BlockTitle_1}}'
@@ -32,10 +33,11 @@ define(['kover'], function(KOVER){
             text: '{{BlockSubTitle_1}}'
         }),
         BlockList_2: KOVER.Ui('ul', {
+            foreach: '{{BlockList_2}}',
+
             Title: KOVER.Ui('li', {
                 text: '{{this}}'
-            }),            
-            foreach: '{{BlockList_2}}'
+            })
         }),
         BlockTitle_2: KOVER.Ui('h3', {
             text: '{{BlockTitle_2}}'

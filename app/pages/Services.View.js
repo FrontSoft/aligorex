@@ -17,11 +17,12 @@ define(['kover'], function(KOVER){
             text: '{{BodyBlock_1}}'
         }),
         BlockLinks: KOVER.Ui('ul', {
+            foreach: '{{BlockLinks}}',
+
             LinkTitle: KOVER.Ui('li', {
                 text: '{{LinkTitle}}',
                 menuLink: '{{LinkPath}}'
-            }),            
-            foreach: '{{BlockLinks}}'
+            })
         })
     });
 });
