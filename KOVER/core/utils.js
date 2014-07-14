@@ -113,12 +113,12 @@ define([], function(){
         if(toString.call(src) == "[object RegExp]"){
             return new RegExp(src);
         }
-//        if(toString.call(src) == "[object Function]"){
-//            return (function(){
-//                src.apply(this, arguments);
-//            });
-//
-//        }
+        if(toString.call(src) == "[object Function]"){
+            return (function(){
+                src.apply(this, arguments);
+            });
+
+        }
         var ret, index;
         //Array
         if(toString.call(src) == "[object Array]"){

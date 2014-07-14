@@ -97,7 +97,13 @@ define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
             if(vmKey){
                 var dataRes = utils.find(context, vmKey[1]);   //@todo exec can return more results
                 if(!utils.isEmpty(dataRes)){
-                    rightBind[key] = dataRes[0];
+                    rightBind[key] = typeof dataRes[0] === 'string' ? val.replace(/\{\{(.+)\}\}/, dataRes[0]) : dataRes[0];
+                }
+            }else if(typeof val === 'object' && val !== null && val !== undefined){
+                for(var prop in val)if( utils.has(val, prop) ){
+                    var hp = {};
+                    hp[prop] = val[prop];
+                    rightBind[key] = processBind(hp, context);
                 }
             }else{
                 rightBind[key] = val;

@@ -1,4 +1,4 @@
-define(['ko'], function(ko){
+define(['ko', 'userConf'], function(ko, cfg){
     'use strict';
 
 
@@ -20,6 +20,25 @@ define(['ko'], function(ko){
                 })
             }
         },
+        menuLink : {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var kover = require('kover');
+                var newAllBindings = function(){
+                    return ko.utils.extend(allBindings(), { clickBubble: false });
+                };
+                newAllBindings.get = function(a){
+                    return a === 'clickBubble' ? false : allBindings.get(a);
+                };
+                newAllBindings.has = function(a){
+                    return a === 'clickBubble' || allBindings.has(a);
+                };
+                return ko.bindingHandlers.click.init(element, function(){
+                        return function(){
+                            kover.GoTo(valueAccessor());
+                        };
+                    }, newAllBindings, viewModel, bindingContext);
+            }
+        },
         extend : {
             init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
 
@@ -33,24 +52,33 @@ define(['ko'], function(ko){
                     extended = returnExtended(name),
                     nodeBinds = allBindings(),
                     parent = element.parentNode,
-                    krAttr = element.getAttribute("kr");
+                    krAttr = element.getAttribute("kr"),
+                    value = valueAccessor(),
+                    extName;
 
                 if(extended){
                     extended = extended.cloneNode(true);
+                    extName = name;
                 }else{
-                    name = 'App';
-                    var lookInApp = returnExtended(name);
+                    extName = cfg.app.mainPage;
+                    var lookInApp = returnExtended(extName);
                     if(!lookInApp) return;  //@todo throw exeption
 
                     extended = lookInApp.cloneNode(true);
                 }
 
-                kover.SyncFire( 'provider:extendBind', [name, bindingContext.$root.pageName, krAttr, extended.getAttribute("kr")] );
+                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
+                var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null}),
+                    a,b;
+                kover.SyncFire( 'page:renderBlock', [obj[0], value, function(dom, binds){
+                    a=dom.childNodes[0];
+                    b=binds;
+                }]);
 
-                ko.applyBindings(kover.GetPage(name).viewModel, extended);
-                extended.setAttribute("kr", krAttr);
-                parent.insertBefore(extended, element);
+                a.setAttribute("kr", value);
+                parent.insertBefore(a, element);
                 parent.removeChild(element);
+                ko.applyBindings(kover.GetPage(extName).viewModel, a);
             }
         },
         detachedSwipe : {
@@ -127,12 +155,12 @@ define(['ko'], function(ko){
 
                 var Hammer = require('hammer'),
                     args = ko.unwrap(valueAccessor()),
-                    options = (args.hasOwnProperty('options')) ? args.options : {},
+                    options = (args && args.hasOwnProperty('options')) ? args.options : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
                     forward,
                     backward,
                     mark = 1,
-                    callback = (args.hasOwnProperty('callback')) ? args.callback : false,
+                    callback = (args && args.hasOwnProperty('callback')) ? args.callback : false,
                     transform,
                     propName,
                     delta,

@@ -1,8 +1,7 @@
-define(function(){
+define(['utils'], function(utils){
     'use strict';
 
-    var utils = require('utils'),
-        disableBinds = ['html', 'style', 'if', 'ifnot', 'event', 'hasFocus', 'unicName', 'template'];
+    var disableBinds = ['html', 'style', 'if', 'ifnot', 'event', 'hasFocus', 'unicName', 'template'];
 
     /**
      * HTML List constructor

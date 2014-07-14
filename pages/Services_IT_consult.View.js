@@ -1,6 +1,6 @@
 define(['kover'], function(KOVER){
 
-    var Page = KOVER.NewPage('Services'),
+    var Page = KOVER.NewPage('Services_IT_consult'),
     Regions = Page.layout({
         CloneSwipedMenu: KOVER.Ui({extend: 'SwipedMenu'}),
         Header: KOVER.Ui('header'),
@@ -17,13 +17,14 @@ define(['kover'], function(KOVER){
         BodyBlock_1: KOVER.Ui('p', {
             text: '{{BodyBlock_1}}'
         }),
-        BlockLinks: KOVER.Ui('ul', {
-            foreach: '{{BlockLinks}}',
-
-            LinkTitle: KOVER.Ui('li', {
-                text: '{{LinkTitle}}',
-                menuLink: '{{LinkPath}}'
-            })
+        BlockSubTitle_1: KOVER.Ui('h4', {
+            text: '{{BlockSubTitle_1}}'
+        }),
+        BlockList_1: KOVER.Ui('ul', {
+            Title: KOVER.Ui('li', {
+                text: '{{this}}'
+            }),            
+            foreach: '{{BlockList_1}}'
         })
     });
 });
