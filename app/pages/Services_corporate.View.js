@@ -2,8 +2,9 @@ define(['kover'], function(KOVER){
 
     var Page = KOVER.NewPage('Services_corporate'),
     Regions = Page.layout({
+        CloneSwipedMenu: KOVER.Ui({extend: 'SwipedMenu'}),
         Header: KOVER.Ui('header'),
-        Body: KOVER.Ui('main'),        
+        Body: KOVER.Ui('main')
     });
 
     Regions.Header({
@@ -78,7 +79,7 @@ define(['kover'], function(KOVER){
                 {BodyBlock_3_p_4_item_10: KOVER.Ui('a', {text: '{{BodyBlock_3_p_4_item_10}}'})},
                 {BodyBlock_3_p_4_item_11: KOVER.Ui('a', {text: '{{BodyBlock_3_p_4_item_11}}'})},
                 {BodyBlock_3_p_4_item_12: KOVER.Ui('a', {text: '{{BodyBlock_3_p_4_item_12}}'})},
-                {BodyBlock_3_p_4_item_13: KOVER.Ui('a', {text: '{{BodyBlock_3_p_4_item_13}}'})},
+                {BodyBlock_3_p_4_item_13: KOVER.Ui('a', {text: '{{BodyBlock_3_p_4_item_13}}'})}
             ]
         }),
         BlockTitle_4: KOVER.Ui('h3', {
@@ -131,6 +132,6 @@ define(['kover'], function(KOVER){
         }),
         BodyBlock_5_p_3: KOVER.Ui('p', {
             text: '{{BodyBlock_5_p_3}}'
-        }),
+        })
     });
 });

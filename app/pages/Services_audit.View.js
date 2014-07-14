@@ -2,6 +2,7 @@ define(['kover'], function(KOVER){
 
     var Page = KOVER.NewPage('Services_audit'),
     Regions = Page.layout({
+        CloneSwipedMenu: KOVER.Ui({extend: 'SwipedMenu'}),
         Header: KOVER.Ui('header'),
         Body: KOVER.Ui('main')
     });
