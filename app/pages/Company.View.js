@@ -24,6 +24,9 @@ define(['kover'], function(KOVER){
     });
 
     Regions.Header({
+        MenuButton: KOVER.Ui('button', {
+            text: 'menu'
+        }),
         HeaderTitle: KOVER.Ui('h2', {
             text: '{{HeaderTitle}}'
         })
