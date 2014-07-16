@@ -210,6 +210,7 @@ define(['ko', 'userConf'], function(ko, cfg){
                 element.style.transitionProperty = propName;
                 element.style.transitionDuration = '200ms';
                 element.style.transitionTimingFunction = 'linear';
+                element.addEventListener('click', hideMenu, true);
 
                 hammertime.on('drag', function(event){
 
@@ -238,6 +239,12 @@ define(['ko', 'userConf'], function(ko, cfg){
                     if(typeof callback === 'function') callback.call(element);
 
                 });
+
+                function hideMenu(event){
+                    if(event.target != this){
+                        this.style[propName] = '0px';
+                    }
+                }
 
             }
         },
