@@ -67,7 +67,7 @@ define(['ko', 'userConf'], function(ko, cfg){
                     extended = lookInApp.cloneNode(true);
                 }
 
-//                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
+                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
                 var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null}),
                     a,b;
                 kover.SyncFire( 'page:renderBlock', [obj[0], value, function(dom, binds){
@@ -155,13 +155,13 @@ define(['ko', 'userConf'], function(ko, cfg){
 
                 var Hammer = require('hammer'),
                     args = ko.unwrap(valueAccessor()),
-                    options = (args.hasOwnProperty('options')) ? args.options : {},
+                    options = (args && args.hasOwnProperty('options')) ? args.options : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
                     horizontal = (direction === 'left' || direction === 'right') ? true : false,
                     forward,
                     backward,
                     mark = 1,
-                    callback = (args.hasOwnProperty('callback')) ? args.callback : false,
+                    callback = (args && args.hasOwnProperty('callback')) ? args.callback : false,
                     transform,
                     propName,
                     delta,
