@@ -157,6 +157,7 @@ define(['ko', 'userConf'], function(ko, cfg){
                     args = ko.unwrap(valueAccessor()),
                     options = (args && args.hasOwnProperty('options')) ? args.options : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
+                    horizontal = (direction === 'left' || direction === 'right') ? true : false,
                     forward,
                     backward,
                     mark = 1,
@@ -166,14 +167,12 @@ define(['ko', 'userConf'], function(ko, cfg){
                     delta,
                     hammerOptions = {
                       dragLockToAxis: true,
-                      dragBlockHorizontal: true,
-                      dragBlockVertical: true
+                      dragBlockHorizontal: horizontal
                     },
                     hammertime = new Hammer(element.parentElement, hammerOptions);
 
                 element.parentElement.style.position = 'relative';
-                element.parentElement.style.overflow = 'hidden';
-                element.style.position = 'absolute';
+                element.style.position = 'fixed';
                 
                 switch(direction) {
                     case 'top':
@@ -211,9 +210,9 @@ define(['ko', 'userConf'], function(ko, cfg){
                 element.style.transitionProperty = propName;
                 element.style.transitionDuration = '200ms';
                 element.style.transitionTimingFunction = 'linear';
+                element.addEventListener('click', hideMenu, true);
 
                 hammertime.on('drag', function(event){
-                    event.gesture.preventDefault();
 
                     var forwardDragEndHandler = function(event){
                         element.style[propName] = (offset > elSize * 0.3) ? elSize + 'px' : '0px';
@@ -240,6 +239,12 @@ define(['ko', 'userConf'], function(ko, cfg){
                     if(typeof callback === 'function') callback.call(element);
 
                 });
+
+                function hideMenu(event){
+                    if(event.target != this){
+                        this.style[propName] = '0px';
+                    }
+                }
 
             }
         },
