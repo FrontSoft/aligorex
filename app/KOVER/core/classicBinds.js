@@ -71,7 +71,7 @@ define(['ko', 'userConf'], function(ko, cfg){
                 var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null}),
                     a,b;
                 kover.SyncFire( 'page:renderBlock', [obj[0], value, function(dom, binds){
-                    a=dom.childNodes[0];
+                    a=dom;
                     b=binds;
                 }]);
 
@@ -336,12 +336,12 @@ define(['ko', 'userConf'], function(ko, cfg){
                             }
                         }
 
-                    }
+                    };
 
                     var slideBack = function(event){
                         curEl.style[directionOpposite] = '0px';
                         hammertime.off("dragend", slideBack);
-                    }
+                    };
 
                     if(nextEl === null) {
                         curEl.style.transitionDuration = '100ms';
@@ -360,6 +360,51 @@ define(['ko', 'userConf'], function(ko, cfg){
                     hammertime.on("dragend swipeleft swiperight", slideChange);
                     
                 });
+
+            }
+        },
+        GoogleMap: {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+                element.addEventListener('click', function(){
+                    var map_div = document.createElement('div');
+                    map_div.style.width = screen.width + 'px';
+                    map_div.style.height = screen.height + 'px';
+                    map_div.style.position = 'absolute';
+                    map_div.style.top = 0;
+                    map_div.style.margin = '0px';
+                    map_div.style.padding = '0px';
+                    map_div.id = 'GoogleMap';
+                    element.parentNode.appendChild(map_div);
+
+                    var mapScript = document.createElement('script'),
+                        initScript = document.createElement('script'),
+                        params = this,
+                        initFunc = function(){
+                            var myLatlng = new google.maps.LatLng(params.coord[0], params.coord[1]);
+                            var mapOptions = {
+                                zoom: params.zoom,
+                                center: myLatlng,
+                                disableDefaultUI: true
+                            };
+                            var map = new google.maps.Map(map_div, mapOptions);
+
+                            var marker = new google.maps.Marker({
+                                position: myLatlng,
+                                map: map
+                            });
+                            var info = new google.maps.InfoWindow({
+                                content: params.content,
+                                maxWidth: 150
+                            });
+                            info.open(map,marker);
+                        };
+                    window.init = function(){
+                        initFunc();
+                    };
+                    mapScript.type = "text/javascript";
+                    mapScript.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyC0Dxs_ezfFUaTSKURgjyyEoi2D0ahelxs&sensor=FALSE&callback=init";
+                    element.parentNode.appendChild(mapScript);
+                }.bind(valueAccessor()), false);
 
             }
         }

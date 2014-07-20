@@ -65,7 +65,7 @@ define(function(){
             recurciveBuilder(obj, block, name);
 
             if(callback){
-                callback(block, binds);
+                callback(block.childNodes[0], binds);
             }else{
                 return {DOM: block, BIND: binds};
             }

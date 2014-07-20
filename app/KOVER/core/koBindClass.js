@@ -1,8 +1,7 @@
-define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
+define(['classicBinds', 'defaultBinds', 'mediator'], function(classicBinds, defaultBinds, mediator){
     'use strict';
 
     var utils = require('utils'),
-        mediator = require('mediator'),
         globals = require('globals'),
         ko = require('ko');
 
