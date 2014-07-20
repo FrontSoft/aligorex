@@ -155,7 +155,7 @@ define(['ko', 'userConf'], function(ko, cfg){
 
                 var Hammer = require('hammer'),
                     args = ko.unwrap(valueAccessor()),
-                    options = (args && args.hasOwnProperty('options')) ? args.options : {},
+                    options = (args && typeof args === "object") ? args : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
                     horizontal = (direction === 'left' || direction === 'right') ? true : false,
                     forward,
@@ -163,8 +163,9 @@ define(['ko', 'userConf'], function(ko, cfg){
                     mark = 1,
                     callback = (args && args.hasOwnProperty('callback')) ? args.callback : false,
                     transform,
-                    propName,
+                    transformInit,
                     delta,
+                    distance,
                     hammerOptions = {
                       dragLockToAxis: true,
                       dragBlockHorizontal: horizontal
@@ -176,62 +177,80 @@ define(['ko', 'userConf'], function(ko, cfg){
                 
                 switch(direction) {
                     case 'top':
-                        transform = 'translate(0, 100%)';
+                        transform = 'translateY';
+                        transformInit = 'translateY(100%)';
                         forward = 'up';
                         backward = 'down';
                         mark = -1;
-                        propName = 'bottom';
+                        element.style.bottom = 0;
                         delta = 'deltaY';
                         break;
                     case 'bottom':
-                        transform = 'translate(0, -100%)';
+                        transform = 'translateY';
+                        transformInit = 'translateY(-100%)';
                         forward = 'down';
                         backward = 'up';
-                        propName = 'top';
+                        element.style.top = 0;
                         delta = 'deltaY';
                         break;
                     case 'left':
-                        transform = 'translate(100%, 0)';
+                        transform = 'translateX';
+                        transformInit = 'translateX(100%)';
                         forward = 'left';
                         backward = 'right';
                         mark = -1;
-                        propName = 'right';
+                        element.style.right = 0;
                         delta = 'deltaX';
                         break;
                     default:
-                        transform = 'translate(-100%, 0)';
+                        transform = 'translateX';
+                        transformInit = 'translateX(-100%)';
                         forward = 'right';
                         backward = 'left';
-                        propName = 'left';
+                        element.style.left = 0;
                         delta = 'deltaX';
                 }
-                element.style[propName] = 0;
-                element.style.webkitTransform = transform;
-                element.style.transitionProperty = propName;
-                element.style.transitionDuration = '200ms';
-                element.style.transitionTimingFunction = 'linear';
+
+                element.style.webkitTransform = transformInit;
+                element.style.transitionProperty = "transform";
+                element.style.transitionDuration = "0";
+                element.style.transitionTimingFunction = "linear";
                 element.addEventListener('click', hideMenu, true);
 
                 hammertime.on('drag', function(event){
 
+                    var regexp = new RegExp('[a-zA-Z\(\)]', 'g'),
+                        elSize = (direction === 'left' || direction === 'right') ? parseFloat(element.offsetWidth) : parseFloat(element.offsetHeight),
+                        offset = element.style.webkitTransform.replace(regexp, "");
+
                     var forwardDragEndHandler = function(event){
-                        element.style[propName] = (offset > elSize * 0.3) ? elSize + 'px' : '0px';
+                        element.style.transitionDuration = "300ms";
+                        element.style.webkitTransform = (elSize - (-mark * offset) > elSize * 0.3) ? transform + '(0px)' : transform + "(" + (-mark * elSize) + 'px)';
                     }
 
                     var backwardDragEndHandler = function(event){
-                        element.style[propName] = ((elSize - offset) < elSize * 0.3) ? elSize + 'px' : '0px';
+                        element.style.transitionDuration = "300ms";
+                        element.style.webkitTransform = (-mark * offset > elSize * 0.3) ? transform + "(" + (-mark * elSize) + 'px)' : transform + '(0px)';
                     }
 
-                    var elSize = (direction === 'left' || direction === 'right') ? parseFloat(element.offsetWidth) : parseFloat(element.offsetHeight),
-                        offset = parseFloat(element.style[propName]);
+                    element.style.transitionDuration = "0";
+
+                    if(offset === "-100%" || offset === "100%") {
+                        offset = -mark * elSize;
+                        element.style.webkitTransform = transform + "(" + offset + "px)";
+                    }
                     
-                    if((event.gesture.direction === forward) && (offset < elSize)){
-                        element.style[propName] = event.gesture[delta] * mark + 'px';
+                    if((event.gesture.direction === forward) && (mark * offset < 0)){
+                        distance = -mark * elSize + event.gesture[delta];
+                        distance = (mark * distance > 0) ? 0 : distance;
+                        element.style.webkitTransform = transform + "(" + distance + 'px)';
                         hammertime.off('dragend', backwardDragEndHandler);
                         hammertime.on('dragend', forwardDragEndHandler);
                     }
-                    if((event.gesture.direction === backward) && (offset > 0)){
-                        element.style[propName] = elSize + event.gesture[delta] * mark + 'px';
+                    if((event.gesture.direction === backward) && (mark * offset > -elSize)){
+                        distance = event.gesture[delta];
+                        distance = (distance < -elSize) ? -elSize : distance;
+                        element.style.webkitTransform = transform + "(" + distance + 'px)';
                         hammertime.off('dragend', forwardDragEndHandler);
                         hammertime.on('dragend', backwardDragEndHandler);
                     }   
@@ -242,7 +261,7 @@ define(['ko', 'userConf'], function(ko, cfg){
 
                 function hideMenu(event){
                     if(event.target != this){
-                        this.style[propName] = '0px';
+                        this.style.webkitTransform = transformInit;
                     }
                 }
 
