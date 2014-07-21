@@ -8,3 +8,6 @@ body>section {
     max-width: 100%;
     background: rgb(105, 105, 207);
 }
+#toggle-side-menu {
+  float: right;
+}

@@ -157,6 +157,7 @@ define(['ko', 'userConf'], function(ko, cfg){
                     args = ko.unwrap(valueAccessor()),
                     options = (args && typeof args === "object") ? args : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
+                    toggleElementId = (options.hasOwnProperty('toggleElementId')) ? options.toggleElementId : false,
                     horizontal = (direction === 'left' || direction === 'right') ? true : false,
                     forward,
                     backward,
@@ -216,6 +217,12 @@ define(['ko', 'userConf'], function(ko, cfg){
                 element.style.transitionDuration = "0";
                 element.style.transitionTimingFunction = "linear";
                 element.addEventListener('click', hideMenu, true);
+                if(toggleElementId)
+                    document.addEventListener('click', function(event) {
+                        if (event.target.id === toggleElementId) {
+                            toggleMenu.call(event.target, event);
+                        }
+                    }, false);
 
                 hammertime.on('drag', function(event){
 
@@ -259,10 +266,27 @@ define(['ko', 'userConf'], function(ko, cfg){
 
                 });
 
-                function hideMenu(event){
+                function menuRedirect(event){
                     if(event.target != this){
-                        this.style.webkitTransform = transformInit;
+                        hideMenu();
                     }
+                }
+
+                function toggleMenu(event){
+                    element.style.transitionDuration = "300ms";
+                    if(element.style.webkitTransform === transformInit) {
+                        showMenu();
+                    } else {
+                        hideMenu();
+                    }
+                }
+
+                function hideMenu(event){
+                    element.style.webkitTransform = transformInit;
+                }
+
+                function showMenu(event){
+                    element.style.webkitTransform = transform + '(0px)';
                 }
 
             }
