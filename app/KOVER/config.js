@@ -23,5 +23,5 @@ require.config({
 });
 
 require(['kover', 'userConf'], function(KOVER, settings){
-    KOVER.GoTo(settings.app.firstPage);
+    KOVER.Compile(settings.app.firstPage);
 });

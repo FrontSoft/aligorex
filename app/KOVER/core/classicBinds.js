@@ -1,4 +1,4 @@
-define(['ko'], function(ko){
+define(['ko', 'userConf'], function(ko, cfg){
     'use strict';
 
 
@@ -20,6 +20,25 @@ define(['ko'], function(ko){
                 })
             }
         },
+        menuLink : {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {
+                var kover = require('kover');
+                var newAllBindings = function(){
+                    return ko.utils.extend(allBindings(), { clickBubble: false });
+                };
+                newAllBindings.get = function(a){
+                    return a === 'clickBubble' ? false : allBindings.get(a);
+                };
+                newAllBindings.has = function(a){
+                    return a === 'clickBubble' || allBindings.has(a);
+                };
+                return ko.bindingHandlers.click.init(element, function(){
+                        return function(){
+                            kover.GoTo(valueAccessor());
+                        };
+                    }, newAllBindings, viewModel, bindingContext);
+            }
+        },
         extend : {
             init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
 
@@ -33,24 +52,33 @@ define(['ko'], function(ko){
                     extended = returnExtended(name),
                     nodeBinds = allBindings(),
                     parent = element.parentNode,
-                    krAttr = element.getAttribute("kr");
+                    krAttr = element.getAttribute("kr"),
+                    value = valueAccessor(),
+                    extName;
 
                 if(extended){
                     extended = extended.cloneNode(true);
+                    extName = name;
                 }else{
-                    name = 'App';
-                    var lookInApp = returnExtended(name);
+                    extName = cfg.app.mainPage;
+                    var lookInApp = returnExtended(extName);
                     if(!lookInApp) return;  //@todo throw exeption
 
                     extended = lookInApp.cloneNode(true);
                 }
 
-                kover.SyncFire( 'provider:extendBind', [name, krAttr, extended.getAttribute("kr")] );
+                kover.SyncFire( 'provider:extendBind', [extName, name, krAttr, extended.getAttribute("kr")] );
+                var obj = kover.Utils.find(kover.GetPage(extName).viewObject, value, function(i){return i.nodeType === null}),
+                    a,b;
+                kover.SyncFire( 'page:renderBlock', [obj[0], value, function(dom, binds){
+                    a=dom;
+                    b=binds;
+                }]);
 
-                ko.applyBindings(kover.GetPage(name).viewModel, extended);
-                extended.setAttribute("kr", krAttr);
-                parent.insertBefore(extended, element);
+                a.setAttribute("kr", value);
+                parent.insertBefore(a, element);
                 parent.removeChild(element);
+                ko.applyBindings(kover.GetPage(extName).viewModel, a);
             }
         },
         detachedSwipe : {
@@ -127,84 +155,102 @@ define(['ko'], function(ko){
 
                 var Hammer = require('hammer'),
                     args = ko.unwrap(valueAccessor()),
-                    options = (args.hasOwnProperty('options')) ? args.options : {},
+                    options = (args && typeof args === "object") ? args : {},
                     direction = (options.hasOwnProperty('direction')) ? options.direction : 'right',
+                    horizontal = (direction === 'left' || direction === 'right') ? true : false,
                     forward,
                     backward,
                     mark = 1,
-                    callback = (args.hasOwnProperty('callback')) ? args.callback : false,
+                    callback = (args && args.hasOwnProperty('callback')) ? args.callback : false,
                     transform,
-                    propName,
+                    transformInit,
                     delta,
+                    distance,
                     hammerOptions = {
                       dragLockToAxis: true,
-                      dragBlockHorizontal: true,
-                      dragBlockVertical: true
+                      dragBlockHorizontal: horizontal
                     },
                     hammertime = new Hammer(element.parentElement, hammerOptions);
 
                 element.parentElement.style.position = 'relative';
-                element.parentElement.style.overflow = 'hidden';
-                element.style.position = 'absolute';
+                element.style.position = 'fixed';
                 
                 switch(direction) {
                     case 'top':
-                        transform = 'translate(0, 100%)';
+                        transform = 'translateY';
+                        transformInit = 'translateY(100%)';
                         forward = 'up';
                         backward = 'down';
                         mark = -1;
-                        propName = 'bottom';
+                        element.style.bottom = 0;
                         delta = 'deltaY';
                         break;
                     case 'bottom':
-                        transform = 'translate(0, -100%)';
+                        transform = 'translateY';
+                        transformInit = 'translateY(-100%)';
                         forward = 'down';
                         backward = 'up';
-                        propName = 'top';
+                        element.style.top = 0;
                         delta = 'deltaY';
                         break;
                     case 'left':
-                        transform = 'translate(100%, 0)';
+                        transform = 'translateX';
+                        transformInit = 'translateX(100%)';
                         forward = 'left';
                         backward = 'right';
                         mark = -1;
-                        propName = 'right';
+                        element.style.right = 0;
                         delta = 'deltaX';
                         break;
                     default:
-                        transform = 'translate(-100%, 0)';
+                        transform = 'translateX';
+                        transformInit = 'translateX(-100%)';
                         forward = 'right';
                         backward = 'left';
-                        propName = 'left';
+                        element.style.left = 0;
                         delta = 'deltaX';
                 }
-                element.style[propName] = 0;
-                element.style.webkitTransform = transform;
-                element.style.transitionProperty = propName;
-                element.style.transitionDuration = '200ms';
-                element.style.transitionTimingFunction = 'linear';
+
+                element.style.webkitTransform = transformInit;
+                element.style.transitionProperty = "transform";
+                element.style.transitionDuration = "0";
+                element.style.transitionTimingFunction = "linear";
+                element.addEventListener('click', hideMenu, true);
 
                 hammertime.on('drag', function(event){
-                    event.gesture.preventDefault();
+
+                    var regexp = new RegExp('[a-zA-Z\(\)]', 'g'),
+                        elSize = (direction === 'left' || direction === 'right') ? parseFloat(element.offsetWidth) : parseFloat(element.offsetHeight),
+                        offset = element.style.webkitTransform.replace(regexp, "");
 
                     var forwardDragEndHandler = function(event){
-                        element.style[propName] = (offset > elSize * 0.3) ? elSize + 'px' : '0px';
+                        element.style.transitionDuration = "300ms";
+                        element.style.webkitTransform = (elSize - (-mark * offset) > elSize * 0.3) ? transform + '(0px)' : transform + "(" + (-mark * elSize) + 'px)';
                     }
 
                     var backwardDragEndHandler = function(event){
-                        element.style[propName] = ((elSize - offset) < elSize * 0.3) ? elSize + 'px' : '0px';
+                        element.style.transitionDuration = "300ms";
+                        element.style.webkitTransform = (-mark * offset > elSize * 0.3) ? transform + "(" + (-mark * elSize) + 'px)' : transform + '(0px)';
                     }
 
-                    var elSize = (direction === 'left' || direction === 'right') ? parseFloat(element.offsetWidth) : parseFloat(element.offsetHeight),
-                        offset = parseFloat(element.style[propName]);
+                    element.style.transitionDuration = "0";
+
+                    if(offset === "-100%" || offset === "100%") {
+                        offset = -mark * elSize;
+                        element.style.webkitTransform = transform + "(" + offset + "px)";
+                    }
                     
-                    if((event.gesture.direction === forward) && (offset < elSize)){
-                        element.style[propName] = event.gesture[delta] * mark + 'px';
+                    if((event.gesture.direction === forward) && (mark * offset < 0)){
+                        distance = -mark * elSize + event.gesture[delta];
+                        distance = (mark * distance > 0) ? 0 : distance;
+                        element.style.webkitTransform = transform + "(" + distance + 'px)';
                         hammertime.off('dragend', backwardDragEndHandler);
                         hammertime.on('dragend', forwardDragEndHandler);
                     }
-                    if((event.gesture.direction === backward) && (offset > 0)){
-                        element.style[propName] = elSize + event.gesture[delta] * mark + 'px';
+                    if((event.gesture.direction === backward) && (mark * offset > -elSize)){
+                        distance = event.gesture[delta];
+                        distance = (distance < -elSize) ? -elSize : distance;
+                        element.style.webkitTransform = transform + "(" + distance + 'px)';
                         hammertime.off('dragend', forwardDragEndHandler);
                         hammertime.on('dragend', backwardDragEndHandler);
                     }   
@@ -212,6 +258,12 @@ define(['ko'], function(ko){
                     if(typeof callback === 'function') callback.call(element);
 
                 });
+
+                function hideMenu(event){
+                    if(event.target != this){
+                        this.style.webkitTransform = transformInit;
+                    }
+                }
 
             }
         },
@@ -284,12 +336,12 @@ define(['ko'], function(ko){
                             }
                         }
 
-                    }
+                    };
 
                     var slideBack = function(event){
                         curEl.style[directionOpposite] = '0px';
                         hammertime.off("dragend", slideBack);
-                    }
+                    };
 
                     if(nextEl === null) {
                         curEl.style.transitionDuration = '100ms';
@@ -308,6 +360,51 @@ define(['ko'], function(ko){
                     hammertime.on("dragend swipeleft swiperight", slideChange);
                     
                 });
+
+            }
+        },
+        GoogleMap: {
+            init: function(element, valueAccessor, allBindings, viewModel, bindingContext){
+                element.addEventListener('click', function(){
+                    var map_div = document.createElement('div');
+                    map_div.style.width = screen.width + 'px';
+                    map_div.style.height = screen.height + 'px';
+                    map_div.style.position = 'absolute';
+                    map_div.style.top = 0;
+                    map_div.style.margin = '0px';
+                    map_div.style.padding = '0px';
+                    map_div.id = 'GoogleMap';
+                    element.parentNode.appendChild(map_div);
+
+                    var mapScript = document.createElement('script'),
+                        initScript = document.createElement('script'),
+                        params = this,
+                        initFunc = function(){
+                            var myLatlng = new google.maps.LatLng(params.coord[0], params.coord[1]);
+                            var mapOptions = {
+                                zoom: params.zoom,
+                                center: myLatlng,
+                                disableDefaultUI: true
+                            };
+                            var map = new google.maps.Map(map_div, mapOptions);
+
+                            var marker = new google.maps.Marker({
+                                position: myLatlng,
+                                map: map
+                            });
+                            var info = new google.maps.InfoWindow({
+                                content: params.content,
+                                maxWidth: 150
+                            });
+                            info.open(map,marker);
+                        };
+                    window.init = function(){
+                        initFunc();
+                    };
+                    mapScript.type = "text/javascript";
+                    mapScript.src = "http://maps.googleapis.com/maps/api/js?key=AIzaSyC0Dxs_ezfFUaTSKURgjyyEoi2D0ahelxs&sensor=FALSE&callback=init";
+                    element.parentNode.appendChild(mapScript);
+                }.bind(valueAccessor()), false);
 
             }
         }

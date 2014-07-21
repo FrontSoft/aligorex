@@ -1,8 +1,8 @@
-define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
+define(['classicBinds', 'defaultBinds', 'mediator'], function(classicBinds, defaultBinds, mediator){
     'use strict';
 
     var utils = require('utils'),
-        mediator = require('mediator'),
+        globals = require('globals'),
         ko = require('ko');
 
     //register custom bindings(classic method)
@@ -20,6 +20,7 @@ define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
             utils.extend(defaultBinds['page:'+name], binds);
         }else {
             defaultBinds['page:' + name] = binds;
+            globals.setGlobals(name+'Ready', true);
         }
     }
 
@@ -42,10 +43,9 @@ define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
      * @param {string} bind
      * @param {string} origin
      */
-    function extBindInstance(page, bind, origin){
-        var search = defaultBinds['page:'+page],
-            slave = utils.find(search, bind),
-            master = utils.find(search, origin);
+    function extBindInstance(masterPage, slavePage, bind, origin){
+        var slave = utils.find(defaultBinds['page:' + slavePage], bind),
+            master = utils.find(defaultBinds['page:' + masterPage], origin);
         delete slave[0].extend;
         utils.extend(slave[0], master[0]);
     }
@@ -87,6 +87,29 @@ define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
         'provider:extendBind': extBindInstance
     });
 
+    function processBind(bind, context){
+        if( utils.isEmpty(bind) || typeof bind === 'function') return bind;
+
+        var rightBind = {};
+        utils.each(bind, function(val, key){
+            var vmKey = typeof val === 'string' ? /\{\{(.+)\}\}/g.exec(val) : false;
+            if(vmKey){
+                var dataRes = utils.find(context, vmKey[1]);   //@todo exec can return more results
+                if(!utils.isEmpty(dataRes)){
+                    rightBind[key] = typeof dataRes[0] === 'string' ? val.replace(/\{\{(.+)\}\}/, dataRes[0]) : dataRes[0];
+                }
+            }else if(typeof val === 'object' && val !== null && val !== undefined){
+                for(var prop in val)if( utils.has(val, prop) ){
+                    var hp = {};
+                    hp[prop] = val[prop];
+                    rightBind[key] = processBind(hp, context);
+                }
+            }else{
+                rightBind[key] = val;
+            }
+        });
+        return rightBind;
+    }
 
     return {
         /**
@@ -140,6 +163,7 @@ define(['classicBinds', 'defaultBinds'], function(classicBinds, defaultBinds){
                                 this.bindingObject['page:'+bindingContext.$root.pageName][nameClass];
 
                         if (bindingAccessor) {
+                            bindingAccessor = processBind(bindingAccessor, selectContext);
                             var binding = typeof bindingAccessor == "function" ? bindingAccessor.call(selectContext, bindArg) : bindingAccessor;
                             ko.utils.extend(result, binding);
                         }

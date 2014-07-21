@@ -1,0 +1,10 @@
+body>section {
+    height: 100%;
+}
+.main-nav {
+    top: 0;
+    bottom: 0;
+    min-width: 20%;
+    max-width: 100%;
+    background: rgb(105, 105, 207);
+}
